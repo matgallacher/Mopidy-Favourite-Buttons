@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Favourite Buttons</title>
+    <link rel="stylesheet" href="/css/jquery.mobile.flatui.css" />
+    <link rel="stylesheet" href="/css/font-awesome.min.css" />
+    <style>
+        .button_area {
+            margin-bottom: 16px;
+        }
+
+        form {
+            padding: 0 16px;
+        }
+
+        label {
+            border-radius: 4px;
+            color: #fff;
+            display: inline-block;
+            font-weight: bold;
+            padding: 10px 15px;
+        }
+
+            label span {
+                font-weight: normal;
+            }
+
+        .mw {
+            background: #e84c3d;
+        }
+
+        .lw {
+            background: #1abc9c;
+        }
+
+        .vhf {
+            background: #5dade2;
+        }
+    </style>
+
+</head>
+<body>
+    <div data-role="page" data-add-back-btn="true">
+        <div data-role="header">
+            <a href="/" rel="external"><span class="fa fa-arrow-left"></span></a>
+            <h1>Favourite buttons</h1>
+        </div>
+        <div data-role="content">
+            <form action="/favourite-buttons/" method="post">
+                <div class="button_area" data-role="track_section">
+                    <label class="mw">
+                        MW: <span data-role="track_display">{{ mw_name }}</span>
+                    </label>
+                    <input type="hidden" name="mw_name" data-role="track_name" value="{{ mw_name }}" />
+                    <input type="hidden" name="mw_uri" data-role="track_uri" value="{{ mw_uri }}" />
+                    <button type="button" data-theme="d" data-role="set_current">Set to currently playing</button>
+                </div>
+                <div class="button_area" data-role="track_section">
+                    <label class="lw">
+                        LW: <span data-role="track_display">{{ lw_name }}</span>
+                    </label>
+                    <input type="hidden" name="lw_name" data-role="track_name" value="{{ lw_name }}" />
+                    <input type="hidden" name="lw_uri" data-role="track_uri" value="{{ lw_uri }}" />
+                    <button type="button" data-theme="b" data-role="set_current">Set to currently playing</button>
+                </div>
+                <div class="button_area" data-role="track_section">
+                    <label class="vhf">
+                        VHF: <span data-role="track_display">{{ vhf_name }}</span>
+                    </label>
+                    <input type="hidden" name="vhf_name" data-role="track_name" value="{{ vhf_name }}" />
+                    <input type="hidden" name="vhf_uri" data-role="track_uri" value="{{ vhf_uri }}" />
+                    <button type="button" data-theme="f" data-role="set_current">Set to currently playing</button>
+                </div>
+                <button type="submit" id="save" data-theme="a">Save favourites</button>
+            </form>
+        </div>
+    </div>
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/jquery.mobile-1.3.2.min.js" "></script>
+    <script src="/mopidy/mopidy.min.js"></script>
+    <script>
+        var mopidy = new Mopidy();
+
+        $('[data-role="set_current"]').click(function () {
+            var $this = $(this);
+            mopidy.playback.getCurrentTrack().done(function (track) {
+                setCurrentTrack($this, track)
+            });
+        });
+
+        function setCurrentTrack(sender, track) {
+            if (!track) {
+                return;
+            }
+
+            var $area = sender.parents('[data-role="track_section"]');
+            $area.find('[data-role="track_display"]').text(track.name);
+            $area.find('[data-role="track_name"]').val(track.name);
+            $area.find('[data-role="track_uri"]').val(track.uri);
+        }
+    </script>
+</body>
+</html>
